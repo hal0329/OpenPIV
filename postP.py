@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun May 26 22:00:12 2019
-
 @author: haruhienomoto
 """
 import numpy as np
@@ -10,10 +9,9 @@ import matplotlib.pyplot as plt
 
 def comparison(sr_li,center):
     
-    C1 = 0. #考慮の余地あり
+    C1 = 0. #考慮の余地あり (PIVハンドブック[森元出版]p.111 を参照)
     C2 = 1.5#考慮の余地あり
     res_surr = np.reshape(sr_li, (1,sr_li.shape[0]*sr_li.shape[1]))
-
     #print(np.std(res_surr))
     if abs(center - np.mean(res_surr)) <= (C1 + C2 * np.std(res_surr)):
         return 0
@@ -30,8 +28,7 @@ def lagrangeInterpolation(surr_li,center):
 def vecInterpolation(u_list):
     n = u_list.shape[0]
     u_list_new = u_list
-    u_check = np.zeros((u_list.shape[0],u_list.shape[0])) 
-    
+    u_check = np.zeros((u_list.shape[0],u_list.shape[0]))    
     
     for i in range(n):
         weight = 1/np.sqrt(2)
@@ -231,74 +228,7 @@ def estmationOfVerticity(pixel,u_list,v_list):
     fig.colorbar(im)
     plt.show()
     """
-    #print(omega_list)
-    
     return omega_list
-
-def omega_plt(omega_list,dev_num,pixel,center):
-    dev_area = pixel * pixel
-    omega_1line = np.zeros_like(omega_list)
-    
-    ###line1
-    omega_1line[center,center] = np.pi/4
-    omega_1linelist = omega_1line * omega_list
-    omega_1 = np.sum(omega_1linelist) / dev_area
-    r1 = pixel / 2.
-    
-    ###line2
-    omega_1line[omega_1line>0]= 1/ dev_area
-    omega_2line = omega_1line
-    
-    omega_2line[center + 1,center] = 1
-    omega_2line[center - 1,center] = 1
-    omega_2line[center,center + 1] = 1
-    omega_2line[center,center - 1] = 1
-    
-    omega_2line[center + 1,center + 1] = np.pi/4.
-    omega_2line[center + 1,center - 1] = np.pi/4.
-    omega_2line[center - 1,center+ 1] = np.pi/4.
-    omega_2line[center - 1,center - 1] = np.pi/4.
-
-    omega_2linelist = omega_2line * omega_list
-    omega_2 = np.sum(omega_2linelist) / dev_area
-    r2 = pixel /2. * 3.
-    
-    ###line3
-    omega_2line[omega_2line>0]= 1/ dev_area
-    omega_3line = omega_2line
-
-    omega_3line[center + 2,center] = 1
-    omega_3line[center - 2,center] = 1
-    omega_3line[center,center + 2] = 1
-    omega_3line[center,center - 2] = 1
-    
-    omega_3line[center + 2,center + 1] = 5/6
-    omega_3line[center - 2,center + 1] = 5/6
-    omega_3line[center + 1,center + 2] = 5/6
-    omega_3line[center - 1,center + 2] = 5/6
-    omega_3line[center + 2,center - 1] = 5/6
-    omega_3line[center - 2,center - 1] = 5/6
-    omega_3line[center + 1,center - 2] = 5/6
-    omega_3line[center - 1,center - 2] = 5/6
-    
-    omega_3line[center + 1,center + 1] = 2/9
-    omega_3line[center + 1,center + 1] = 2/9
-    omega_3line[center + 1,center + 1] = 2/9
-    omega_3line[center + 1,center + 1] = 2/9
-    
-    omega_3linelist = omega_3line * omega_list
-    omega_3 = np.sum(omega_3linelist) / dev_area
-    r3 = pixel /2. * 5.
-    
-    
-    plt.figure()
-    plt.scatter(r1,omega_1)
-    plt.scatter(r2,omega_2)
-    plt.scatter(r3,omega_3)
-    plt.ylim([-0.01,0.01])
-    plt.show()
-    
-
 
 def ContinuityofTime(u_arr):
     obs_num_p1 = u_arr.shape[2]
@@ -325,20 +255,5 @@ def ContinuityofTime(u_arr):
             u_isecelse = u_arr[:,:,i]
             u_return_kousin = np.dstack([u_return, u_isecelse])
             u_return = u_return_kousin
-            
     
-    return u_return
-            
-                
-            
-"""
-#test
-u = np.ones(100).reshape(10,10)
-u[1,1] = 1
-u[6,8] = 1.5
-print(u)
-u_inter = vecInterpolation(u) #interpolation
-print(u_inter)
-"""                
-    
-            
+    return u_return         

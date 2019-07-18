@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu May  9 15:03:45 2019
-
 @author: haruhienomoto
 """
-
 import numpy as np
 from scipy import fftpack
 #import matplotlib.pyplot as plt
@@ -30,7 +28,6 @@ def separate(img,v_sp,h_sp):
         ax.set_axis_off()
     plt.show()
     """
-    
     return out_imgs_np
 
 def myphaseCorrelate(img2,img1): #1:t[s] #2:t+dt[s]
@@ -38,35 +35,31 @@ def myphaseCorrelate(img2,img1): #1:t[s] #2:t+dt[s]
     nx0_img = float(img1.shape[1])
     ny0_img = float(img1.shape[0])
     pixel = nx0_img*ny0_img
-    f1 = fftpack.fft2(img1)   
+    #ウィナーヒンチンの定理より,相互相関係数が最も高い座標をd=[dx.dy]で返却
+    f1 = fftpack.fft2(img1)
     f2 = fftpack.fft2(img2)
-    
     Pxy = np.multiply(np.conj(f1),f2)/pixel
     Cxy = fftpack.ifft2(Pxy)
-    
     Pxx = np.multiply(np.conj(f1),f1)/pixel
     Cxx = np.real(fftpack.ifft2(Pxx))
     Pyy = np.multiply (np.conj(f2),f2)/pixel
     Cyy = np.real(fftpack.ifft2(Pyy))
-    
     Cxy_s = fftpack.fftshift(np.real(Cxy))/np.sqrt(Cxx[0,0]*Cyy[0,0])
     #Cxy_s = np.real(Cxy)   
     dum = np.unravel_index(np.argmax(Cxy_s), Cxy_s.shape)
     #index 配列を一緒にsort? 配列ごとにsortして最後に全体でsort
-    
+ 
     dx = dum[1]-np.floor(nx0_img/2.)
     dy = -1.*(dum[0]-np.floor(ny0_img/2.))
     d = [dx,dy]
     
     
-    if np.sum(Cxy_s) > 0.99999 * Cxy_s.shape[0] * Cxy_s.shape[1]:
-        d = [0,0] #simulation画像の余白への操作
+    if np.sum(Cxy_s) > 0.99999 * Cxy_s.shape[0] * Cxy_s.shape[1]: 
+        d = [0,0] #検査領域が全て白だった場合は変位0とする.(np.argmax()の性質で全て最大値の場合は初めのindexを返却する)
         ans = 1
         
     if np.sum(Cxy_s) < 0.0001 * Cxy_s.shape[0] * Cxy_s.shape[1]:
-        d = [0,0] #simulation画像の余白への操作
+        d = [0,0] #検査領域が全て黒だった場合は変位0とする.
         ans = 1
-        
-    
 
     return d, Cxy_s,ans

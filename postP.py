@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun May 26 22:00:12 2019
-@author: haruhienomoto
+@author: 
 """
 import numpy as np
 import matplotlib.pyplot as plt

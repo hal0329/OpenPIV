@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu May  9 13:29:36 2019
-@author: haruhienomoto
+@author: 
 """
 
 #解像度  -> 1080 *720 なら仕方ないのではという結論

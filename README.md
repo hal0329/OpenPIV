@@ -1,1 +1,1 @@
-# Pythonを用いたPIV(Particle Image Velocimetory)の実装
+# PIV(Particle Image Velocimetory)の実装
